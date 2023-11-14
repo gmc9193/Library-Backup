@@ -1,4 +1,4 @@
-﻿<!-- ManageUsers.razor -->
+<!-- ManageUsers.razor -->
 @page "/manageusers"
 
 @inject IJSRuntime JSRuntime
@@ -30,9 +30,11 @@
     }
 </style>
 
+<!-- User management component -->
 <div class="container">
     <h1>Manage Users</h1>
 
+    <!-- User action selection -->
     <div>
         <label for="userAction">Select Action:</label>
         <select id="userAction" @bind="selectedAction">
@@ -45,6 +47,7 @@
         <button @onclick="PerformAction">Go</button>
     </div>
 
+    <!-- Add user form -->
     @if (selectedAction == "Add")
     {
         <div>
@@ -55,6 +58,7 @@
         </div>
     }
 
+    <!-- List users -->
     @if (selectedAction == "List")
     {
         <div>
@@ -70,18 +74,23 @@
 </div>
 
 @code {
+    // Selected user action
     private string selectedAction = "Add";
 
+    // List of users
     private List<User> users = new List<User>();
 
+    // New user being added
     private User newUser = new User();
 
+    // Component initialization
     protected override void OnInitialized()
     {
-        
+        // Load users from file when the component is initialized
         users = LoadUsersFromFile();
     }
 
+    // Perform the selected user action
     private void PerformAction()
     {
         switch (selectedAction)
@@ -90,26 +99,28 @@
                 AddUser();
                 break;
             case "Edit":
-                
+                // To be implemented
                 break;
             case "Delete":
-                
+                // To be implemented
                 break;
             case "List":
-                
+                // To be implemented
                 break;
             default:
                 break;
         }
     }
 
+    // Add a new user
     private void AddUser()
     {
         users.Add(newUser);
         SaveUsersToFile();
-        newUser = new User(); 
+        newUser = new User(); // Reset newUser for the next entry
     }
 
+    // Load users from file
     private List<User> LoadUsersFromFile()
     {
         try
@@ -123,6 +134,7 @@
         }
     }
 
+    // Save users to file
     private void SaveUsersToFile()
     {
         try
@@ -131,14 +143,14 @@
             string json = JsonSerializer.Serialize(users);
             System.IO.File.WriteAllText(filePath, json);
         }
-
         catch (Exception ex)
         {
-            
+            // Log the exception or display an error message
             Console.WriteLine($"Error saving users to file: {ex.Message}");
         }
     }
 
+    // User class definition
     public class User
     {
         public string Username { get; set; } = "";
