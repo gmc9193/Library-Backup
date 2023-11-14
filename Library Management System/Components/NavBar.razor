@@ -1,0 +1,100 @@
+﻿<!-- NavBar.razor -->
+@inject NavigationManager NavigationManager
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        background: url('/images/BookBackground.jpg') repeat; /* Specify the path to your background image */
+    }
+
+    .title-container {
+        background-color: rgba(255, 225, 245, 0.8); /* Solid color background with some transparency */
+        padding: 10px; /* Add padding to the title container */
+        border-radius: 10px; /* Add border-radius for a rounded appearance */
+        margin-bottom: 20px; /* Adjust margin to create space between title and buttons */
+    }
+
+    .title {
+        font-family: Garamond, sans-serif;
+        font-size: 65px;
+        font-weight: bold;
+        color: #000;
+        margin: 30px 0;
+        text-align: center; /* Center the text horizontally */
+    }
+
+    .button-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .color-button {
+        width: 160px;
+        height: 160px;
+        margin: 12px;
+        background-color: #ffe1f5;
+        color: #000;
+        font-size: 29px;
+        border: 2px solid #dfbbda;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+        .color-button:hover {
+            background-color: #dfbbda;
+        }
+</style>
+
+<nav>
+    <div class="title-container">
+        <div class="title">Canalave Library</div>
+    </div>
+    <div class="button-container">
+        <button class="color-button" @onclick="NavigateToManageBooks">Manage Books</button>
+        <button class="color-button" @onclick="NavigateToManageUsers">Manage Users</button>
+        <button class="color-button" @onclick="NavigateToBorrowBook">Borrow Book</button>
+        <button class="color-button" @onclick="NavigateToReturnBook">Return Book</button>
+        <button class="color-button" @onclick="NavigateToListBorrowedBooks">List Borrowed Books</button>
+    </div>
+</nav>
+
+@code {
+    private void NavigateToManageBooks()
+    {
+        NavigationManager.NavigateTo("/ManageBooks");
+    }
+
+    private void NavigateToManageUsers()
+    {
+        NavigationManager.NavigateTo("/ManageUsers");
+    }
+
+    private void NavigateToBorrowBook()
+    {
+        NavigationManager.NavigateTo("/BorrowBook");
+    }
+
+    private void NavigateToReturnBook()
+    {
+        NavigationManager.NavigateTo("/ReturnBook");
+    }
+
+    private void NavigateToListBorrowedBooks()
+    {
+        NavigationManager.NavigateTo("/ListBorrowedBooks");
+    }
+}
+
+
+
+
+

@@ -1,0 +1,44 @@
+﻿@inject IJSRuntime JSRuntime
+@using Library_Management_System.Models
+
+@page "/manageusers"
+
+
+
+    <h3>Manage Users</h3>
+
+    <button style="color: #FFFFFF; background-color: #3C3C3C;" @onclick="AddUser" tabindex="0" aria-label="Add User">Add User</button>
+    <button style="color: #FFFFFF; background-color: #3C3C3C;" @onclick="EditUser" tabindex="1" aria-label="Edit User">Edit User</button>
+    <button style="color: #FFFFFF; background-color: #3C3C3C;" @onclick="DeleteUser" tabindex="2" aria-label="Delete User">Delete User</button>
+    <button style="color: #FFFFFF; background-color: #3C3C3C;" @onclick="ListUsers" tabindex="3" aria-label="List Users">List Users</button>
+    <button style="color: #FFFFFF; background-color: #3C3C3C;" @onclick="GoBack" tabindex="4" aria-label="Go Back">Back</button>
+
+    @code {
+    private List<User> users = new List<User>();
+
+    private void AddUser()
+    {
+        // Implement AddUser logic using HTML input elements
+    }
+
+    private void EditUser()
+    {
+        // Implement EditUser logic using HTML input elements
+    }
+
+    private void DeleteUser()
+    {
+        // Implement DeleteUser logic using HTML input elements
+    }
+
+    private void ListUsers()
+    {
+        // Implement ListUsers logic to display users using HTML elements
+    }
+
+    private void GoBack()
+    {
+        // Implement GoBack logic to navigate back
+        Console.WriteLine("Go Back clicked");
+    }
+}

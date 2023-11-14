@@ -1,0 +1,72 @@
+﻿@page "/managebooks"
+
+@using Library_Management_System.Models
+
+<h3>Manage Books</h3>
+
+<!-- Add Book Form -->
+<div class="mb-3">
+    <label for="title">Title:</label>
+    <input id="title" class="form-control" @bind="newBook.Title" />
+</div>
+
+<div class="mb-3">
+    <label for="author">Author:</label>
+    <input id="author" class="form-control" @bind="newBook.Author" />
+</div>
+
+<div class="mb-3">
+    <label for="isbn">ISBN:</label>
+    <input id="isbn" class="form-control" @bind="newBook.ISBN" />
+</div>
+
+<button class="btn btn-primary" @onclick="AddBook">Add</button>
+
+<!-- Pop-up Message -->
+@if (successMessageVisible)
+{
+    <Blazorise.Alert Color="Color.Success">
+        @successMessage
+    </Blazorise.Alert>
+}
+
+@code {
+    private Book newBook = new Book();
+    private bool successMessageVisible = false;
+    private string successMessage = "";
+
+    private async Task AddBook()
+    {
+        try
+        {
+            // Your existing code here
+
+            // For example, you might want to add logging:
+            Console.WriteLine("Book added successfully!");
+
+            // Show the success message
+            successMessage = "Book added successfully!";
+            successMessageVisible = true;
+
+            // Hide the success message after a delay (e.g., 3000 milliseconds)
+            await Task.Delay(3000);
+
+            // After the delay, hide the success message
+            successMessageVisible = false;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"An error occurred: {ex.Message}");
+
+            // Show an error message
+            successMessage = $"Error adding the book: {ex.Message}";
+            successMessageVisible = true;
+
+            // Hide the error message after a delay (e.g., 5000 milliseconds)
+            await Task.Delay(5000);
+
+            // After the delay, hide the error message
+            successMessageVisible = false;
+        }
+    }
+}
