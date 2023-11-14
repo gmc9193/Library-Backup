@@ -1,44 +1,147 @@
-﻿@inject IJSRuntime JSRuntime
-@using Library_Management_System.Models
-
+﻿<!-- ManageUsers.razor -->
 @page "/manageusers"
 
+@inject IJSRuntime JSRuntime
+@using System.Text.Json
 
+<link href="/css/site.css" rel="stylesheet" />
 
-    <h3>Manage Users</h3>
+<style>
+    body {
+        background: url('images/BookBackground.jpg') center center repeat;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+    }
 
-    <button style="color: #FFFFFF; background-color: #3C3C3C;" @onclick="AddUser" tabindex="0" aria-label="Add User">Add User</button>
-    <button style="color: #FFFFFF; background-color: #3C3C3C;" @onclick="EditUser" tabindex="1" aria-label="Edit User">Edit User</button>
-    <button style="color: #FFFFFF; background-color: #3C3C3C;" @onclick="DeleteUser" tabindex="2" aria-label="Delete User">Delete User</button>
-    <button style="color: #FFFFFF; background-color: #3C3C3C;" @onclick="ListUsers" tabindex="3" aria-label="List Users">List Users</button>
-    <button style="color: #FFFFFF; background-color: #3C3C3C;" @onclick="GoBack" tabindex="4" aria-label="Go Back">Back</button>
+    .container {
+        text-align: center;
+        background-color: rgba(255, 255, 255, 0.8);
+        padding: 20px;
+        border-radius: 10px;
+    }
 
-    @code {
+    select, button, input {
+        margin: 10px;
+        padding: 10px;
+        font-size: 16px;
+    }
+</style>
+
+<div class="container">
+    <h1>Manage Users</h1>
+
+    <div>
+        <label for="userAction">Select Action:</label>
+        <select id="userAction" @bind="selectedAction">
+            <option value="Add">Add User</option>
+            <option value="Edit">Edit User</option>
+            <option value="Delete">Delete User</option>
+            <option value="List">List Users</option>
+        </select>
+
+        <button @onclick="PerformAction">Go</button>
+    </div>
+
+    @if (selectedAction == "Add")
+    {
+        <div>
+            <h3>Add a User</h3>
+            <input type="text" placeholder="Username" @bind="newUser.Username" />
+            <input type="text" placeholder="Email" @bind="newUser.Email" />
+            <button @onclick="AddUser">Save</button>
+        </div>
+    }
+
+    @if (selectedAction == "List")
+    {
+        <div>
+            <h3>User List</h3>
+            <ul>
+                @foreach (var user in users)
+                {
+                    <li>@user.Username - @user.Email</li>
+                }
+            </ul>
+        </div>
+    }
+</div>
+
+@code {
+    private string selectedAction = "Add";
+
     private List<User> users = new List<User>();
+
+    private User newUser = new User();
+
+    protected override void OnInitialized()
+    {
+        // Load users from file when the component is initialized
+        users = LoadUsersFromFile();
+    }
+
+    private void PerformAction()
+    {
+        switch (selectedAction)
+        {
+            case "Add":
+                AddUser();
+                break;
+            case "Edit":
+                // Implement EditUser method
+                break;
+            case "Delete":
+                // Implement DeleteUser method
+                break;
+            case "List":
+                // No action needed here
+                break;
+            default:
+                break;
+        }
+    }
 
     private void AddUser()
     {
-        // Implement AddUser logic using HTML input elements
+        users.Add(newUser);
+        SaveUsersToFile();
+        newUser = new User(); // Reset newUser for the next entry
     }
 
-    private void EditUser()
+    private List<User> LoadUsersFromFile()
     {
-        // Implement EditUser logic using HTML input elements
+        try
+        {
+            string json = System.IO.File.ReadAllText("wwwroot/users.json");
+            return JsonSerializer.Deserialize<List<User>>(json) ?? new List<User>();
+        }
+        catch (Exception)
+        {
+            return new List<User>();
+        }
     }
 
-    private void DeleteUser()
+    private void SaveUsersToFile()
     {
-        // Implement DeleteUser logic using HTML input elements
+        try
+        {
+            string filePath = "wwwroot/users.json";
+            string json = JsonSerializer.Serialize(users);
+            System.IO.File.WriteAllText(filePath, json);
+        }
+
+        catch (Exception ex)
+        {
+            // Log the exception or display an error message
+            Console.WriteLine($"Error saving users to file: {ex.Message}");
+        }
     }
 
-    private void ListUsers()
+    public class User
     {
-        // Implement ListUsers logic to display users using HTML elements
-    }
-
-    private void GoBack()
-    {
-        // Implement GoBack logic to navigate back
-        Console.WriteLine("Go Back clicked");
+        public string Username { get; set; } = "";
+        public string Email { get; set; } = "";
     }
 }

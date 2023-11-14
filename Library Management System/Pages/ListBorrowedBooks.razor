@@ -1,5 +1,88 @@
-﻿<h3>List_Borrowed_Books</h3>
+﻿<!-- ListBorrowedBooks.razor -->
+@page "/listborrowedbooks"
+
+@using System.Text.Json
+
+<link href="/css/site.css" rel="stylesheet" />
+
+<style>
+    body {
+        background-image: url('images/BookBackground.jpg');
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+    }
+
+    .container {
+        text-align: center;
+        background-color: rgba(255, 255, 255, 0.8);
+        padding: 20px;
+        border-radius: 10px;
+    }
+
+    ul {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    li {
+        margin: 10px;
+        font-size: 18px;
+    }
+
+</style>
+
+<div class="container">
+    <h1>List Borrowed Books</h1>
+
+    @if (borrowedBooks.Any())
+    {
+        <ul>
+            @foreach (var book in borrowedBooks)
+            {
+                <li>@book.Title by @book.Author</li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p>No books currently borrowed.</p>
+    }
+</div>
 
 @code {
+    private List<Book> borrowedBooks = new List<Book>();
 
+    protected override void OnInitialized()
+    {
+        // Load all books
+        var books = LoadBooksFromFile();
+
+        // Filter borrowed books
+        borrowedBooks = books.Where(b => b.IsBorrowed).ToList();
+    }
+
+    private List<Book> LoadBooksFromFile()
+    {
+        try
+        {
+            string json = System.IO.File.ReadAllText("wwwroot/books.json");
+            return JsonSerializer.Deserialize<List<Book>>(json) ?? new List<Book>();
+        }
+        catch (Exception)
+        {
+            return new List<Book>();
+        }
+    }
+
+    public class Book
+    {
+        public string Title { get; set; } = "";
+        public string Author { get; set; } = "";
+        public string ISBN { get; set; } = "";
+        public bool IsBorrowed { get; set; }
+        public string BorrowedBy { get; set; }
+    }
 }
