@@ -59,7 +59,7 @@
 
     protected override void OnInitialized()
     {
-        // Load books from file when the component is initialized
+     
         books = LoadBooksFromFile();
     }
 
@@ -69,7 +69,7 @@
 
         if (selectedBookObject != null)
         {
-            // Check if the borrowerId exists in users.json (you need to implement this logic)
+           
             bool userExists = CheckUserExists(borrowerId);
 
             if (userExists)
@@ -100,12 +100,10 @@
         }
     }
 
-    // Placeholder method, implement the logic to check if the user exists in users.json
+    
     private bool CheckUserExists(string userId)
     {
-        // Implement the logic to check if the user exists in users.json
-        // You may need to load the user data from the file and check if the given userId exists
-        return false; // Placeholder, replace with your actual logic
+        //Confused on how to do this right now
     }
 
     public class Book
