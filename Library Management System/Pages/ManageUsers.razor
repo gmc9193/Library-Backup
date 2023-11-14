@@ -78,7 +78,7 @@
 
     protected override void OnInitialized()
     {
-        // Load users from file when the component is initialized
+        
         users = LoadUsersFromFile();
     }
 
@@ -90,13 +90,13 @@
                 AddUser();
                 break;
             case "Edit":
-                // Implement EditUser method
+                
                 break;
             case "Delete":
-                // Implement DeleteUser method
+                
                 break;
             case "List":
-                // No action needed here
+                
                 break;
             default:
                 break;
@@ -107,7 +107,7 @@
     {
         users.Add(newUser);
         SaveUsersToFile();
-        newUser = new User(); // Reset newUser for the next entry
+        newUser = new User(); 
     }
 
     private List<User> LoadUsersFromFile()
@@ -134,7 +134,7 @@
 
         catch (Exception ex)
         {
-            // Log the exception or display an error message
+            
             Console.WriteLine($"Error saving users to file: {ex.Message}");
         }
     }
