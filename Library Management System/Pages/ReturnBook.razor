@@ -1,5 +1,175 @@
-﻿<h3>Return_Book</h3>
+﻿@page "/returnbook"
+
+@inject IJSRuntime JSRuntime
+@using System.Text.Json
+
+<link href="/css/site.css" rel="stylesheet" />
+
+<style>
+    body {
+        background-image: url('images/BookBackground.jpg');
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+    }
+
+    .container {
+        text-align: center;
+        background-color: rgba(255, 255, 255, 0.8);
+        padding: 20px;
+        border-radius: 10px;
+    }
+
+    select, button, input {
+        margin: 10px;
+        padding: 10px;
+        font-size: 16px;
+    }
+
+</style>
+
+<div class="container">
+    <h1>Return Books</h1>
+
+    <div>
+        <label for="returnUsername">Enter Your Username:</label>
+        <input type="text" id="returnUsername" @bind="returnUsername" />
+        <button @onclick="LoadBorrowedBooks">Go</button>
+    </div>
+
+    @if (returnBorrowedBooks.Any())
+    {
+        <div>
+            <label for="returnBook">Pick which book you would like to return:</label>
+            <select id="returnBook" @bind="selectedReturnBook">
+                @foreach (var book in returnBorrowedBooks)
+                {
+                    <option value="@book.Title">@book.Title</option>
+                }
+            </select>
+
+            <button @onclick="AddReturnBook">Go</button>
+        </div>
+
+        <div>
+            <p>@returnMessage</p>
+        </div>
+    }
+    else
+    {
+        <p>No books currently borrowed by the user.</p>
+    }
+</div>
 
 @code {
+    private string returnUsername = "";
+    private string selectedReturnBook = "";
+    private string returnMessage = "";
 
+    private List<Book> returnBorrowedBooks = new List<Book>();
+
+    private void LoadBorrowedBooks()
+    {
+        // Load users from file
+        var users = LoadUsersFromFile();
+
+        // Find the user
+        var user = users.FirstOrDefault(u => u.Username == returnUsername);
+
+        if (user != null)
+        {
+            // Load all books
+            var books = LoadBooksFromFile();
+
+            // Filter books that are currently borrowed by the user
+            returnBorrowedBooks = books.Where(b => b.BorrowedBy == returnUsername && b.IsBorrowed).ToList();
+
+            returnMessage = ""; // Clear any previous error messages
+        }
+        else
+        {
+            returnBorrowedBooks.Clear();
+            returnMessage = "User not found.";
+        }
+
+        // Trigger a re-render of the component
+        StateHasChanged();
+    }
+
+    private void AddReturnBook()
+    {
+        // Update the selected book's BorrowedBy property
+        var book = returnBorrowedBooks.FirstOrDefault(b => b.Title == selectedReturnBook);
+        if (book != null)
+        {
+            book.BorrowedBy = "";
+            book.IsBorrowed = false;
+            SaveBooksToFile();
+            returnMessage = "Book returned successfully.";
+        }
+        else
+        {
+            returnMessage = "Book not found.";
+        }
+
+        // Trigger a re-render of the component
+        StateHasChanged();
+    }
+
+    private List<Book> LoadBooksFromFile()
+    {
+        try
+        {
+            string json = System.IO.File.ReadAllText("wwwroot/books.json");
+            return JsonSerializer.Deserialize<List<Book>>(json) ?? new List<Book>();
+        }
+        catch (Exception)
+        {
+            return new List<Book>();
+        }
+    }
+
+    private List<User> LoadUsersFromFile()
+    {
+        try
+        {
+            string json = System.IO.File.ReadAllText("wwwroot/users.json");
+            return JsonSerializer.Deserialize<List<User>>(json) ?? new List<User>();
+        }
+        catch (Exception)
+        {
+            return new List<User>();
+        }
+    }
+
+    private void SaveBooksToFile()
+    {
+        try
+        {
+            string filePath = "wwwroot/books.json";
+            string json = JsonSerializer.Serialize(returnBorrowedBooks);
+            System.IO.File.WriteAllText(filePath, json);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error saving books to file: {ex.Message}");
+        }
+    }
+
+    public class Book
+    {
+        public string Title { get; set; } = "";
+        public string Author { get; set; } = "";
+        public string ISBN { get; set; } = "";
+        public bool IsBorrowed { get; set; }
+        public string BorrowedBy { get; set; }
+    }
+
+    public class User
+    {
+        public string Username { get; set; } = "";
+        public string Email { get; set; } = "";
+    }
 }

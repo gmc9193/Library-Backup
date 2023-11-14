@@ -1,5 +1,117 @@
-﻿<h3>Borrow Book</h3>
+﻿<!-- BorrowBook.razor -->
+@page "/borrowbook"
+@inject IJSRuntime JSRuntime
+@using System.Text.Json
+<link href="~/css/site.css" rel="stylesheet" />
+
+<style>
+    body {
+        background-image: url('images/BookBackground.jpg');
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+    }
+
+    .container {
+        text-align: center;
+        background-color: rgba(255, 255, 255, 0.8);
+        padding: 20px;
+        border-radius: 10px;
+    }
+
+    select, button {
+        margin: 10px;
+        padding: 10px;
+        font-size: 16px;
+    }
+</style>
+
+<div class="container">
+    <h1>Borrow Book</h1>
+
+    <div>
+        <label for="selectedBook">Select a Book:</label>
+        <select id="selectedBook" @bind="selectedBook">
+            @foreach (var book in books)
+            {
+                <option value="@book.Title">@book.Title by @book.Author (ISBN: @book.ISBN)</option>
+            }
+        </select>
+
+        <label for="borrowerId">Enter User ID:</label>
+        <input type="text" id="borrowerId" @bind="borrowerId" />
+
+        <button @onclick="AddBorrowBook">Go</button>
+    </div>
+
+    <div>
+        <p>@borrowMessage</p>
+    </div>
+</div>
 
 @code {
+    private List<Book> books = new List<Book>();
+    private string selectedBook;
+    private string borrowerId;
+    private string borrowMessage;
 
+    protected override void OnInitialized()
+    {
+        // Load books from file when the component is initialized
+        books = LoadBooksFromFile();
+    }
+
+    private void AddBorrowBook()
+    {
+        var selectedBookObject = books.FirstOrDefault(b => b.Title == selectedBook);
+
+        if (selectedBookObject != null)
+        {
+            // Check if the borrowerId exists in users.json (you need to implement this logic)
+            bool userExists = CheckUserExists(borrowerId);
+
+            if (userExists)
+            {
+                borrowMessage = "Book borrowed successfully!";
+            }
+            else
+            {
+                borrowMessage = "User not found. Try different credentials.";
+            }
+        }
+        else
+        {
+            borrowMessage = "Book not found. Try a different book.";
+        }
+    }
+
+    private List<Book> LoadBooksFromFile()
+    {
+        try
+        {
+            string json = System.IO.File.ReadAllText("wwwroot/books.json");
+            return JsonSerializer.Deserialize<List<Book>>(json) ?? new List<Book>();
+        }
+        catch (Exception)
+        {
+            return new List<Book>();
+        }
+    }
+
+    // Placeholder method, implement the logic to check if the user exists in users.json
+    private bool CheckUserExists(string userId)
+    {
+        // Implement the logic to check if the user exists in users.json
+        // You may need to load the user data from the file and check if the given userId exists
+        return false; // Placeholder, replace with your actual logic
+    }
+
+    public class Book
+    {
+        public string Title { get; set; } = "";
+        public string Author { get; set; } = "";
+        public string ISBN { get; set; } = "";
+    }
 }
